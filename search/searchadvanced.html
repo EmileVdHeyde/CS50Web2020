@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Search Advanced Page</title>
+        <link rel="stylesheet" href="searchstyle.css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        
+    </head>
+    <body id="body2"> 
+        <img id='#advImage' src="small.png" alt="Logo">
+        <button id="button2" onclick="document.location='searchhome.html'">Back To Home Search</button>
+        <h3 style="color: #d93025;">Advanced Search</h3>
+        <h5>Find Pages With...</h5>
+    <form  id='as1' class="relative" action="https://google.com/search">
+        <table >
+          <tr>
+            <td align="left">all these words:</td>
+            <td align="left"><input id='#advbox' type="text" name="as_q"></td>
+          </tr>
+          <tr>
+            <td align="left">this exact word or phrase:</td>
+            <td align="left"><input  id='#advbox'  type="text" name="as_epq"></td>
+          </tr>
+          <tr>
+            <td align="left">any of these words:</td>
+            <td align="left"><input  id='#advbox'  type="text" name="as_oq"></td>
+          </tr>
+          <tr>
+            <td align="left">none of these words:</td>
+            <td align="left"><input  id='#advbox'  type="text" name="as_eq"></td>
+          </tr>
+        </table>
+        <br><input id="advsearchbutton" type="submit" value="Advanced Search"></br>
+      </form>
+        
+    </body>
+</html>

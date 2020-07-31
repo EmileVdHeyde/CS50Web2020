@@ -1,0 +1,29 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    New Entry 
+{% endblock %}
+
+{% block body %}
+<h1>New Page </h1>
+   {{message}}
+    <form method='POST'>
+        {% csrf_token %}
+        <table>
+
+       
+        {{form.as_table}} 
+        </table>
+        <Input type='submit'>
+    </form>
+ 
+  
+{% endblock %}
+
+
+
+<!--action="{% url 'addnew' %}" -->
+
+<!-- <input style="height:200px; width:900px ;font-size:14pt; text-align:top ; text-align:left ;vertical-align:top ;padding:2px;" 
+     class="input" type="text" name="nb" placeholder="Add New Text here" >
+     -->

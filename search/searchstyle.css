@@ -1,0 +1,127 @@
+
+
+
+* {
+    font-family: Roboto ;
+   }
+
+body {
+ display: block;
+ text-align: center;
+ padding-top: 109px;
+}
+
+#rcorners2 {
+text-align:left;
+border-radius: 20px;
+color: black;
+border-color: lightgray;
+height:40px;
+width:400px
+ }
+
+#Image{
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+    clear: both;
+    padding-top: 112px;
+    padding-bottom: 20px
+
+}
+
+#advImage {
+    width: 100px;
+    height: 75px;
+    position: absolute;
+    left:0;
+    top:0;
+}
+
+
+#button3 { 
+        background-image: -webkit-linear-gradient(top,#f5f5f5,#f1f1f1);
+        background-color: #f2f2f2;
+        border: 1px solid #f2f2f2;
+        border-radius: 4px;
+        color: #5F6368;
+        font-family: arial,sans-serif;
+        font-size: 14px;
+        margin: 11px 4px;
+        padding: 0 16px;
+        line-height: 27px;
+        height: 36px;
+        min-width: 54px;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+}
+
+
+#button2 {position: absolute;
+    top: 10px;
+    right: 10px;
+    background-image: -webkit-linear-gradient(top,#f5f5f5,#f1f1f1);
+        background-color: #f2f2f2;
+        border: 1px solid #f2f2f2;
+        border-radius: 4px;
+        color: #5F6368;
+        font-family: arial,sans-serif;
+        font-size: 14px;
+        margin: 11px 4px;
+        padding: 0 16px;
+        line-height: 27px;
+        height: 36px;
+        min-width: 54px;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+    
+}
+
+#button1 {position: absolute;
+    top: 10px;
+    right: 220px;
+    background-image: -webkit-linear-gradient(top,#f5f5f5,#f1f1f1);
+        background-color: #f2f2f2;
+        border: 1px solid #f2f2f2;
+        border-radius: 4px;
+        color: #5F6368;
+        font-family: arial,sans-serif;
+        font-size: 14px;
+        margin: 11px 4px;
+        padding: 0 16px;
+        line-height: 27px;
+        height: 36px;
+        min-width: 54px;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+    
+}
+
+#as1 {
+    display: block;
+    top:50px;
+    left:50px
+}
+
+#body2 {
+    display: block;
+    text-align: left;
+    padding: 20px;
+   }
+
+#advsearchbutton {
+background-color:blue ;
+color: white;
+}
+
+#advbox {
+border-radius: 1px;
+border: 1px solid #d9d9d9;
+border-top: 1px solid #c0c0c0;
+font-size: 13px;
+height: 25px;
+padding: 1px 8px;
+}

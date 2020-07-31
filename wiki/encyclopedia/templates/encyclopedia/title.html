@@ -1,0 +1,29 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+     {{title}}
+{% endblock %}
+
+{% block body %}
+        {% if title_valid %}
+          <form method="post">
+            {% csrf_token %}
+            <div>       
+            {{bodyMD|safe}}
+            </div> 
+            <a href="{% url 'edit' title %}">Edit Page</a>
+          </form>
+        {% else %}
+            <h1>404 Not Found</h1>
+        {% endif %}      
+{% endblock %}
+
+<!--
+<form action="{% url 'tasks:add' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit">
+</form>
+
+ contenteditable="true"
+-->
