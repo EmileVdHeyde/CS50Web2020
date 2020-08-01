@@ -24,7 +24,7 @@ class Listing (models.Model):
     Image=models.ImageField(upload_to='listing')
     ItemCategory=models.ForeignKey(ItemCategory, on_delete=models.CASCADE)
     ListedOn= models.DateTimeField(auto_now_add=True)
-    Status=models.BooleanField(default=False)
+    Status=models.BooleanField(default=True)
     ListedBy= models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

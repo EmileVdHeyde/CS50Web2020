@@ -6,7 +6,7 @@
     <ul>       
     {% for l in listings %}
         <li>
-        
+            <a href="{% url 'listing' l.id %}">
                 {{ l }} 
 
         </li>    

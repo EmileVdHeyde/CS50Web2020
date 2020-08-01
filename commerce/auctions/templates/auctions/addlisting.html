@@ -3,7 +3,17 @@
 {% block body %}
     <h2>Create Listing</h2>
     
-     
+<form method = 'Post' enctype='multipart/form-data'>
+    
+    {% csrf_token %}
+
+    <table>
+        {{lform.as_table}}
+
+    </table>
+    <input type="submit">
+
+</form>
 
 
 {% endblock %}

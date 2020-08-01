@@ -2,19 +2,20 @@
 
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect,HttpResponseBadRequest , Http404
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect,HttpResponseBadRequest , Http404 
+from django.shortcuts import render , redirect
 from django.urls import reverse
 
 from .models import User, Listing , Bid, Comment , WatchList, ItemCategory
 
-from django import forms 
+ 
+from .forms import listingform
 
 #Index Page all listings, should be tweeked to only show ACTIVE , STATUS conditional 
 def index(request):
     #if Listing.Status=True 
     return render(request, "auctions/index.html",{
-        "listings": Listing.objects.all()   #Listing.objects.exclude(Listing.Status=False).all()
+        "listings": Listing.objects.filter(Status=True)   #Listing.objects.exclude(Listing.Status=False).all()
     })
 
 
@@ -76,16 +77,7 @@ def listing(request,listing_id):
          listing = Listing.objects.get(id=listing_id) 
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
-    return render(request, "auctions/listing.html", {
-        "listingname": listing.Title  ,
-        "artist": listing.Artist , 
-        "description": listing.Description, 
-        "startbid": listing.StartBidAmount,
-        "listingdate": listing.ListedOn,
-        "listingstatus": listing.Status , 
-        "listedby": listing.ListedBy , 
-        "listedpic": listing.Image 
-    })
+    return render(request, "auctions/listing.html", {'listing':listing})
 
 #view for listing categories , should redirect to the active listings 
 def categories(request):
@@ -100,14 +92,23 @@ def watchlist(request):
     })
 
 def addlisting(request):
-    return render(request, "auctions/addlisting.html",{
-        "listings": Listing.objects.all()
-    })
+    if request.method=='GET':
+        lform=listingform()
+        return render (request,'auctions/addlisting.html',{'lform':lform})
+    else:
+        lform=listingform(request.POST , request.FILES)
+        if lform.is_valid():
+            listing=lform.save(commit=False)
+            listing.ListedBy=request.user
+            listing.save()
+            return redirect('index')
+        return render (request,'auctions/addlisting.html',{'lform':lform})
+
+
 
 # This should take a bid value added on listing page and asses if it is larger than current max bid for item
 # If not , do not save, and tell user it value to small
 # If larger , save value, save username, save item name into BID model
 # automatically this should update the max value of the item. 
-class bid(forms.Form): 
-    content=forms.CharField(widget=forms.Textarea(attrs={"rows":5, "cols":50}))
+
 
