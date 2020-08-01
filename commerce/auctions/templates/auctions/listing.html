@@ -1,0 +1,45 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listing: {{ listingname }}</h2>
+
+     {{listedpic}}
+     
+<hr> 
+     <h4>About this item</h4>  
+    
+<ul>
+    <li> Artist: {{artist}}</li>
+    <li> Description: {{description}} </li>
+    <li> Listed on:  {{listingdate}}  by {{listedby}} </li>
+</ul>
+<hr>
+    <h4>Bid Details</h4>
+
+<ul>
+     <li> Listing Status: {{listingstatus}} </li>    
+     <li> Highest Bid : {{startbid}} </li>
+     <li> Current Bid From:   xxxxx       </li>
+</ul>
+
+<hr>
+   <h4>Bid On Item</h4>
+    <form method="post">
+       {% csrf_token %}
+       <table>
+       {{form.as_table}} 
+    <input type="submit">
+</form>
+<hr>
+
+     <h4>Add/Remove Item to Watchlist</h4>
+     <input type="submit">
+
+<hr>
+     <h4>Close Bid (optional if this bid was placed by the current user)</h4>
+     <input type="submit">
+<hr>
+<h4>View and Add Comments</h4>
+<input type="submit">
+<hr>
+{% endblock %}

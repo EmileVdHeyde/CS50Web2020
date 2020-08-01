@@ -1,14 +1,21 @@
+
+
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,HttpResponseBadRequest , Http404
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Listing , Bid, Comment , WatchList, ItemCategory
 
+from django import forms 
 
+#Index Page all listings, should be tweeked to only show ACTIVE , STATUS conditional 
 def index(request):
-    return render(request, "auctions/index.html")
+    #if Listing.Status=True 
+    return render(request, "auctions/index.html",{
+        "listings": Listing.objects.all()   #Listing.objects.exclude(Listing.Status=False).all()
+    })
 
 
 def login_view(request):
@@ -61,3 +68,46 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+# This is the main view for the listing details , we also want to pull in bid and comment info on the listing page
+def listing(request,listing_id):
+    try:
+         listing = Listing.objects.get(id=listing_id) 
+    except Listing.DoesNotExist:
+        raise Http404("Listing not found.")
+    return render(request, "auctions/listing.html", {
+        "listingname": listing.Title  ,
+        "artist": listing.Artist , 
+        "description": listing.Description, 
+        "startbid": listing.StartBidAmount,
+        "listingdate": listing.ListedOn,
+        "listingstatus": listing.Status , 
+        "listedby": listing.ListedBy , 
+        "listedpic": listing.Image 
+    })
+
+#view for listing categories , should redirect to the active listings 
+def categories(request):
+    return render(request, "auctions/categories.html",{
+        "categories": ItemCategory.objects.all()
+    })
+
+# View to take item and add it to the a list for user name 
+def watchlist(request):
+    return render(request, "auctions/watchlist.html",{
+        "listings": Listing.objects.all()
+    })
+
+def addlisting(request):
+    return render(request, "auctions/addlisting.html",{
+        "listings": Listing.objects.all()
+    })
+
+# This should take a bid value added on listing page and asses if it is larger than current max bid for item
+# If not , do not save, and tell user it value to small
+# If larger , save value, save username, save item name into BID model
+# automatically this should update the max value of the item. 
+class bid(forms.Form): 
+    content=forms.CharField(widget=forms.Textarea(attrs={"rows":5, "cols":50}))
+

@@ -13,11 +13,12 @@ class User(AbstractUser):
 class ItemCategory (models.Model):
     ItemCategoryName=models.CharField('Cat Name', max_length=20)
     def __str__(self):
-        return f"{self.ItemCategoryName})"
+        return f"{self.ItemCategoryName}"
 
 # store auction listings - create listing 
 class Listing (models.Model):
     Title=models.CharField(max_length=64)
+    Artist=models.CharField(max_length=64)
     Description = models.TextField(blank=True)
     StartBidAmount=models.FloatField()
     Image=models.ImageField(upload_to='listing')
