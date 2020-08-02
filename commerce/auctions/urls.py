@@ -11,4 +11,6 @@ urlpatterns = [
    ,path( "categories",views.categories,name='categories')
    ,path( "watchlist",views.watchlist,name='watchlist')
    ,path("addlisting",views.addlisting,name='addlisting')
+   ,path("categoriesindex/<int:id>",views.categoriesindex,name='categoriesindex')
+   ,path("bidhistory",views.bidtransaction,name='bidtransaction')
 ]

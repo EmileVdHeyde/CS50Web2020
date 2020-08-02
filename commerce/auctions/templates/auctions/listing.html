@@ -18,7 +18,7 @@
 
 <ul>
      <li> Listing Status: {{listing.Status}} </li>    
-     <li> Highest Bid : {{listing.StartBidAmount}} </li>
+     <li> Highest Bid : {{listing.StartBidAmount}} or {{max_bid}}</li>
      <li> Current Bid From:   xxxxx       </li>
 </ul>
 
@@ -33,6 +33,8 @@
 <hr>
 
      <h4>Add/Remove Item to Watchlist</h4>
+
+
      <input type="submit">
 
 <hr>
@@ -40,6 +42,16 @@
      <input type="submit">
 <hr>
 <h4>View and Add Comments</h4>
-<input type="submit">
+<ul>
+         {% for com in comments %}
+         <li>
+             {{com.CommentBy}} :  {{com.CommentOn}} : {{com.Comment}}
+         </li>    
+         {% endfor %}
+</ul>
+
+
 <hr>
 {% endblock %}
+
+

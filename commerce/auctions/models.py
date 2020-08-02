@@ -35,6 +35,7 @@ class Listing (models.Model):
         return data[0].max
 
 
+
 class Bid(models.Model):
     listing=models.ForeignKey(Listing,on_delete=models.CASCADE)
     BidBy=models.ForeignKey(User, on_delete=models.CASCADE)

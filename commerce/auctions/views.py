@@ -74,10 +74,15 @@ def register(request):
 # This is the main view for the listing details , we also want to pull in bid and comment info on the listing page
 def listing(request,listing_id):
     try:
-         listing = Listing.objects.get(id=listing_id) 
+         listing =  Listing.objects.get(id=listing_id) 
+         comments = Comment.objects.filter(id=listing_id)    
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
-    return render(request, "auctions/listing.html", {'listing':listing})
+    return render(request, "auctions/listing.html", {'listing':listing , 'comments':comments})
+#temp=Listing
+#print(temp.max_bid(2))
+
+#print(Comment.objects.filter(id=2).values()) 
 
 #view for listing categories , should redirect to the active listings 
 def categories(request):
@@ -104,6 +109,12 @@ def addlisting(request):
             return redirect('index')
         return render (request,'auctions/addlisting.html',{'lform':lform})
 
+# Categories Index Page all listings active and in the chosen category in the view category
+def categoriesindex(request,id):
+    ItemCategoryvar= ItemCategory.objects.filter(id=id).last()
+    return render(request, "auctions/index.html",{
+        "listings": Listing.objects.filter(Status=True , ItemCategory=ItemCategoryvar)   
+    })
 
 
 # This should take a bid value added on listing page and asses if it is larger than current max bid for item
@@ -111,4 +122,7 @@ def addlisting(request):
 # If larger , save value, save username, save item name into BID model
 # automatically this should update the max value of the item. 
 
+#function to show all transactions on all bids in a table for reference , admin user only 
+def bidtransaction(request):
+    return render(request, "auctions/bidhistory.html", {'bid':Bid.objects.all()})
 
