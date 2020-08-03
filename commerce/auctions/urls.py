@@ -13,4 +13,6 @@ urlpatterns = [
    ,path("addlisting",views.addlisting,name='addlisting')
    ,path("categoriesindex/<int:id>",views.categoriesindex,name='categoriesindex')
    ,path("bidhistory",views.bidtransaction,name='bidhistory')
+   ,path("post_comment/<int:pk>",views.postcomment,name='post_comment')
+   ,path("add_watchlist/<int:pk>",views.addwatchlist,name='add_watchlist')
 ]

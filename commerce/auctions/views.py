@@ -9,7 +9,7 @@ from django.urls import reverse
 from .models import User, Listing , Bid, Comment , WatchList, ItemCategory
 
  
-from .forms import listingform
+from .forms import listingform, commentsform
 
 #Index Page all listings, should be tweeked to only show ACTIVE , STATUS conditional 
 def index(request):
@@ -74,14 +74,39 @@ def register(request):
 # This is the main view for the listing details , we also want to pull in bid and comment info on the listing page
 def listing(request,listing_id):
     try:
-         listing =  Listing.objects.get(id=listing_id) 
-         comments = Comment.objects.filter(id=listing_id)    
+         listing =  Listing.objects.get(id=listing_id)       #one listing 
+         if WatchList.objects.filter(listing=listing, WatchListOf=request.user).exists():
+             added=True
+         else:
+             added=False
+         cform=commentsform()
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
-    return render(request, "auctions/listing.html", {'listing':listing , 'comments':comments})
+    return render(request, "auctions/listing.html", {'listing':listing , 'cform':cform ,'added':added })
+
+def postcomment(request,pk):
+    listing=Listing.objects.get(id=pk)
+    cform=commentsform(request.POST)
+    if cform.is_valid():
+        comment=cform.save(commit=False)
+        comment.CommentBy=request.user
+        comment.listing=listing
+        comment.save()
+        return redirect('listing',listing_id=pk)
+
+def addwatchlist (request,pk):
+    listing=Listing.objects.get(id=pk)
+    if WatchList.objects.filter(listing=listing, WatchListOf=request.user).exists():
+       WatchList.objects.filter(listing=listing, WatchListOf=request.user).delete()
+    else:
+        watchlist=WatchList(listing=listing, WatchListOf=request.user)
+        watchlist.save()
+    return redirect('listing',listing_id=pk)
+
+
+
 #temp=Listing
 #print(temp.max_bid(2))
-
 #print(Comment.objects.filter(id=2).values()) 
 
 #view for listing categories , should redirect to the active listings 
@@ -90,12 +115,13 @@ def categories(request):
         "categories": ItemCategory.objects.all()
     })
 
-# View to take item and add it to the a list for user name 
+# View to sow the relationship between user and item and show watch list selected 
 def watchlist(request):
     return render(request, "auctions/watchlist.html",{
         "listings": Listing.objects.all()
     })
 
+#View to show FORM to take in the information to populate a new listing
 def addlisting(request):
     if request.method=='GET':
         lform=listingform()
@@ -117,13 +143,19 @@ def categoriesindex(request,id):
     })
 
 
+
+
+
+
+
+
+
 # This should take a bid value added on listing page and asses if it is larger than current max bid for item
 # If not , do not save, and tell user it value to small
 # If larger , save value, save username, save item name into BID model
 # automatically this should update the max value of the item. 
 
 #function to show all transactions on all bids in a table for reference , admin user only 
-
 def bidtransaction(request):
     bid=Bid.objects.all()
     return render(request, "auctions/bidhistory.html", {'bid':bid }) 

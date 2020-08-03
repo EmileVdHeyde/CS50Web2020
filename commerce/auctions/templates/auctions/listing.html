@@ -30,26 +30,40 @@
        {{form.as_table}} 
     <input type="submit">
 </form>
-<hr>
+{% if added %}
+<a href="{% url 'add_watchlist' listing.id %} ">
+     Remove From WatchList
+</a>
+{% else %}
+<a href="{% url 'add_watchlist' listing.id %} ">
+     Add To WatchList
+</a>
+{% endif %}
 
-     <h4>Add/Remove Item to Watchlist</h4>
 
 
-     <input type="submit">
 
-<hr>
+
      <h4>Close Bid (optional if this bid was placed by the current user)</h4>
      <input type="submit">
 <hr>
 <h4>View and Add Comments</h4>
 <ul>
-         {% for com in comments %}
-         <li>
-             {{com.CommentBy}} :  {{com.CommentOn}} : {{com.Comment}}
-         </li>    
+         {% for com in listing.comment_set.all %}
+               <li>
+                    {{com.CommentBy}} :  {{com.CommentOn}} : {{com.Comment}}
+               </li> 
          {% endfor %}
 </ul>
 
+<form method='POST' action="{% url 'post_comment' listing.id  %}">
+     {% csrf_token %}
+     <table>
+          {{cform.as_table}}
+     </table>
+     <input type="submit">
+</form>
+  
 
 <hr>
 {% endblock %}
