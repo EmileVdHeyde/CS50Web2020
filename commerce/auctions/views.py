@@ -7,7 +7,7 @@ from django.shortcuts import render , redirect
 from django.urls import reverse
 
 from .models import User, Listing , Bid, Comment , WatchList, ItemCategory
-from .forms import listingform, commentsform
+from .forms import listingform, commentsform, bidform
 
 ##################1. ACCESS PAGES - LOG IN , LOG OUT , REGISTER  ###################################################
 
@@ -80,9 +80,10 @@ def listing(request,listing_id):
          else:
              added=False
          cform=commentsform()
+         bform=bidform()
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
-    return render(request, "auctions/listing.html", {'listing':listing , 'cform':cform ,'added':added })
+    return render(request, "auctions/listing.html", {'listing':listing , 'cform':cform ,'added':added , 'bform':bform })
 
 
 # While the above view showed the blank template , the below view saves the input into the comments table
@@ -97,6 +98,20 @@ def postcomment(request,pk):
         comment.save()
         return redirect('listing',listing_id=pk)
 
+# While the view listing showed the blank form to input text, the below view saves the input value to the bid table
+# The form will take the user listing name automatrically into comments table
+# There needs to be a check to accept the bid , it must be more that the current bid. < still need to do> 
+# display a sucsess or not enough message and allow user to add another value in redrect <stil need to do> 
+def postbid(request,pk):
+    listing=Listing.objects.get(id=pk)
+    bform=bidform(request.POST)
+    if bform.is_valid():
+        comment=bform.save(commit=False)
+        comment.BidBy=request.user
+        comment.listing=listing
+        comment.save()
+        return redirect('listing',listing_id=pk)
+
 # remove item from Watchlist  if it exists 
 # Add item to watch list , and pass on the listing and user id to the Watchlist table.
 def addwatchlist (request,pk):
@@ -107,6 +122,7 @@ def addwatchlist (request,pk):
         watchlist=WatchList(listing=listing, WatchListOf=request.user)
         watchlist.save()
     return redirect('listing',listing_id=pk)
+
 
 
 ############### 3 . ADDING A LISTING ######################################################################
@@ -154,14 +170,14 @@ def categoriesindex(request,id):
 
 ###########  5. WATCHLIST PAGE   ###################################################
 
-# View to show the relationship between user and item and show watch list selected (TO BE EDITED)
+# View to show the relationship between user and item and show watch list selected 
 def watchlist(request):
     return render(request, "auctions/watchlist.html",{
         "watchlistings": WatchList.objects.filter(WatchListOf=request.user)
     })
 
 
-###################### 6. BIDDING TRANSACTION PAGE###################################################3
+###################### Bonus 6. BIDDING TRANSACTION PAGE###################################################3
 
 # This should take a bid value added on listing page and asses if it is larger than current max bid for item
 # If not , do not save, and tell user it value to small
@@ -169,9 +185,9 @@ def watchlist(request):
 # automatically this should update the max value of the item. 
 
 
-
-
-#function to show all transactions on all bids in a table for reference , admin user only 
+#function to show all transactions on all bids in a table for reference , admin user only
+# Add a date filter and an item filter , order by date.  sold filter 
+#export to pdf or excel ?? 
 def bidtransaction(request):
     bid=Bid.objects.all()
     return render(request, "auctions/bidhistory.html", {'bid':bid }) 
