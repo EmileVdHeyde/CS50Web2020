@@ -42,6 +42,8 @@ class Bid(models.Model):
     Amount=models.FloatField()
     BidOn= models.DateTimeField(auto_now_add=True)
 
+
+
 class Comment(models.Model):
     listing=models.ForeignKey(Listing,on_delete=models.CASCADE)
     CommentBy=models.ForeignKey(User, on_delete=models.CASCADE)

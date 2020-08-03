@@ -123,6 +123,8 @@ def categoriesindex(request,id):
 # automatically this should update the max value of the item. 
 
 #function to show all transactions on all bids in a table for reference , admin user only 
+
 def bidtransaction(request):
-    return render(request, "auctions/bidhistory.html", {'bid':Bid.objects.all()})
+    bid=Bid.objects.all()
+    return render(request, "auctions/bidhistory.html", {'bid':bid }) 
 

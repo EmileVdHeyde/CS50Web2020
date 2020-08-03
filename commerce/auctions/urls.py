@@ -12,5 +12,5 @@ urlpatterns = [
    ,path( "watchlist",views.watchlist,name='watchlist')
    ,path("addlisting",views.addlisting,name='addlisting')
    ,path("categoriesindex/<int:id>",views.categoriesindex,name='categoriesindex')
-   ,path("bidhistory",views.bidtransaction,name='bidtransaction')
+   ,path("bidhistory",views.bidtransaction,name='bidhistory')
 ]

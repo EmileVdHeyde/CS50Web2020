@@ -1,13 +1,49 @@
 
 {% extends "auctions/layout.html" %}
 
+
+
 {% block body %}
+
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
     <h2>Bid History</h2>
 <body>
-     {{bid.listing}}  :  {{bid.BidOn}}    :  {{bid.Amount}}   :   {{bid.BidBy}}
+    <table>
+        <tr'>
+            <th>BidID</th>
+            <th>Listing Name</th> 
+            <th>Bid Date</th>
+            <th>Bid Done By</th>
+            <th>Bid Amount</th>
+        </tr>
+            {% for b in bid %}      
+        <tr>
+            <td>{{b.id}}</td>
+            <td>{{b.listing}}</td>
+            <td>{{b.BidOn}} </td>
+            <td>{{b.BidBy}}</td>
+            <td>{{b.Amount}}</td>
+        </tr>
+            {% endfor %}
+        </table>
+  
 </body>
-   
+
     
 {% endblock %}
-
-
