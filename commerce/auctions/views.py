@@ -7,17 +7,9 @@ from django.shortcuts import render , redirect
 from django.urls import reverse
 
 from .models import User, Listing , Bid, Comment , WatchList, ItemCategory
-
- 
 from .forms import listingform, commentsform
 
-#Index Page all listings, should be tweeked to only show ACTIVE , STATUS conditional 
-def index(request):
-    #if Listing.Status=True 
-    return render(request, "auctions/index.html",{
-        "listings": Listing.objects.filter(Status=True)   #Listing.objects.exclude(Listing.Status=False).all()
-    })
-
+##################1. ACCESS PAGES - LOG IN , LOG OUT , REGISTER  ###################################################
 
 def login_view(request):
     if request.method == "POST":
@@ -71,7 +63,15 @@ def register(request):
         return render(request, "auctions/register.html")
 
 
-# This is the main view for the listing details , we also want to pull in bid and comment info on the listing page
+
+###################2. THE LISTING PAGE ###########################################################
+
+# This is the main view for the listing details, One page per item is generated, using the id of the item. 
+# ERROR Control done if the number of listing is not valid.
+# Using the relationship between Listing and comments , we call the comments in HTML 
+# On this view a comments EMPTY form is also displayed.
+# A check for Watch list item added or not is done by the varible ADDED to display different text in HTML <ON/OFF>
+
 def listing(request,listing_id):
     try:
          listing =  Listing.objects.get(id=listing_id)       #one listing 
@@ -84,6 +84,9 @@ def listing(request,listing_id):
         raise Http404("Listing not found.")
     return render(request, "auctions/listing.html", {'listing':listing , 'cform':cform ,'added':added })
 
+
+# While the above view showed the blank template , the below view saves the input into the comments table
+# the form only takes comments and automatically we parse the user and listing name to the  comments table 
 def postcomment(request,pk):
     listing=Listing.objects.get(id=pk)
     cform=commentsform(request.POST)
@@ -94,6 +97,8 @@ def postcomment(request,pk):
         comment.save()
         return redirect('listing',listing_id=pk)
 
+# remove item from Watchlist  if it exists 
+# Add item to watch list , and pass on the listing and user id to the Watchlist table.
 def addwatchlist (request,pk):
     listing=Listing.objects.get(id=pk)
     if WatchList.objects.filter(listing=listing, WatchListOf=request.user).exists():
@@ -104,22 +109,7 @@ def addwatchlist (request,pk):
     return redirect('listing',listing_id=pk)
 
 
-
-#temp=Listing
-#print(temp.max_bid(2))
-#print(Comment.objects.filter(id=2).values()) 
-
-#view for listing categories , should redirect to the active listings 
-def categories(request):
-    return render(request, "auctions/categories.html",{
-        "categories": ItemCategory.objects.all()
-    })
-
-# View to sow the relationship between user and item and show watch list selected 
-def watchlist(request):
-    return render(request, "auctions/watchlist.html",{
-        "listings": Listing.objects.all()
-    })
+############### 3 . ADDING A LISTING ######################################################################
 
 #View to show FORM to take in the information to populate a new listing
 def addlisting(request):
@@ -135,6 +125,26 @@ def addlisting(request):
             return redirect('index')
         return render (request,'auctions/addlisting.html',{'lform':lform})
 
+
+###########  4. INDEX PAGE  ###################################################
+
+
+#Index Page all listings. Filter applied to Listing Model to only show Active Listings
+def index(request):
+    #if Listing.Status=True 
+    return render(request, "auctions/index.html",{
+        "listings": Listing.objects.filter(Status=True)   #Listing.objects.exclude(Listing.Status=False).all()
+    })
+
+
+###########  5. CATEGORY  AND CATEGORY INDEX PAGES  ###################################################
+
+#view for listing categories , should redirect to the active listings 
+def categories(request):
+    return render(request, "auctions/categories.html",{
+        "categories": ItemCategory.objects.all()
+    })
+
 # Categories Index Page all listings active and in the chosen category in the view category
 def categoriesindex(request,id):
     ItemCategoryvar= ItemCategory.objects.filter(id=id).last()
@@ -142,18 +152,24 @@ def categoriesindex(request,id):
         "listings": Listing.objects.filter(Status=True , ItemCategory=ItemCategoryvar)   
     })
 
+###########  5. WATCHLIST PAGE   ###################################################
+
+# View to show the relationship between user and item and show watch list selected (TO BE EDITED)
+def watchlist(request):
+    return render(request, "auctions/watchlist.html",{
+        "watchlistings": WatchList.objects.filter(WatchListOf=request.user)
+    })
 
 
-
-
-
-
-
+###################### 6. BIDDING TRANSACTION PAGE###################################################3
 
 # This should take a bid value added on listing page and asses if it is larger than current max bid for item
 # If not , do not save, and tell user it value to small
 # If larger , save value, save username, save item name into BID model
 # automatically this should update the max value of the item. 
+
+
+
 
 #function to show all transactions on all bids in a table for reference , admin user only 
 def bidtransaction(request):

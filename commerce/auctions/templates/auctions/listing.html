@@ -1,19 +1,52 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+
+<style>
+     table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+</style>
+
+
     <h2>{{ listing.Title }}</h2>
 
      <img src="/media/{{listing.Image}}" width="250" height="300">
      
 <hr> 
+
+{% if added %}
+<a href="{% url 'add_watchlist' listing.id %} ">
+     Remove From WatchList
+</a>
+{% else %}
+<a href="{% url 'add_watchlist' listing.id %} ">
+     Add To WatchList
+</a>
+{% endif %}
+
+<hr>
      <h4>About this item</h4>  
     
 <ul>
     <li> <strong>Artist:</strong> {{listing.Artist}}</li>
     <li> <strong>Description:</strong> {{listing.Description}} </li>
-    <li> <strong>Listed on:</strong  {{listing.ListedOn}}  by {{listing.ListedBy}} </li>
+    <li> <strong>Listed on:</strong>  {{listing.ListedOn}}  <strong>by</strong> {{listing.ListedBy}} </li>
 </ul>
 <hr>
+
     <h4>Bid Details</h4>
 
 <ul>
@@ -29,33 +62,32 @@
        <table>
        {{form.as_table}} 
     <input type="submit">
-</form>
-{% if added %}
-<a href="{% url 'add_watchlist' listing.id %} ">
-     Remove From WatchList
-</a>
-{% else %}
-<a href="{% url 'add_watchlist' listing.id %} ">
-     Add To WatchList
-</a>
-{% endif %}
+    </form>
 
+<hr> 
+    <h4>Close Bid (optional if this bid was placed by the current user)</h4>
+    <input type="submit">
 
-
-
-
-     <h4>Close Bid (optional if this bid was placed by the current user)</h4>
-     <input type="submit">
 <hr>
-<h4>View and Add Comments</h4>
-<ul>
-         {% for com in listing.comment_set.all %}
-               <li>
-                    {{com.CommentBy}} :  {{com.CommentOn}} : {{com.Comment}}
-               </li> 
-         {% endfor %}
-</ul>
 
+<h4>Item Comments</h4>
+
+<table>
+     <tr'>
+         <th>Commented By </th>
+         <th>Comment Date</th> 
+         <th>Comment</th>
+     </tr>
+         {% for com in listing.comment_set.all %}     
+     <tr>
+         <td>{{com.CommentBy}}</td>
+         <td>{{com.CommentOn}}</td>
+         <td>{{com.Comment}}</td>
+     </tr>
+         {% endfor %}
+     </table>
+<hr>
+<h4>Add A Comment </h4>
 <form method='POST' action="{% url 'post_comment' listing.id  %}">
      {% csrf_token %}
      <table>

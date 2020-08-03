@@ -4,10 +4,10 @@
     <h2>My WatchList</h2>
     
     <ul>       
-        {% for l in listings %}
+        {% for l in watchlistings %}
             <li>
-                <a href="{% url 'listing' l.id %}">
-                    {{ l }} 
+                <a href="{% url 'listing' l.listing_id %}">
+                    {{ l.listing }} 
     
             </li>    
         {% endfor %}

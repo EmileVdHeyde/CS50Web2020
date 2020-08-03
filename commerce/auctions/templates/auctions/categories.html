@@ -6,9 +6,7 @@
     <ul>       
         {% for c in categories %}
             <li>
-                <a href="{% url 'categoriesindex' c.id %}"></a>
-                    {{ c }} 
-    
+                <a href="{% url 'categoriesindex' c.id %}">{{ c }} </a>
             </li>    
         {% endfor %}
         </ul>
