@@ -109,14 +109,15 @@ def postcomment(request,pk):
 
 # While the view listing showed the blank form to input text, the below view saves the input value to the bid table
 # The form will take the user listing name automatrically into comments table
-# There needs to be a check to accept the bid , it must be more that the current bid. < still need to do> 
-# display a sucsess or not enough message and allow user to add another value in redrect <stil need to do> 
+# There needs to be a check to accept the bid , it must be more that the current bid. 
+# display a success or not enough message and allow user to add another value in redrect<still need to do
 
 def postbid(request,pk):
     listing=Listing.objects.get(id=pk)
     bform=bidform(request.POST)
-    maxbid=400                     #float(listing.max_bid())
-    print(maxbid)
+    maxbid=listing.max_bid()    #apply this function created in models. apply it to the data object 
+    if maxbid is None:
+        maxbid=listing.StartBidAmount    # when no bid is placed yet , it myst take the start bid amount 
     if bform.is_valid():
         bid=bform.save(commit=False)
         if bid.Amount>maxbid:
@@ -150,11 +151,11 @@ def addwatchlist (request,pk):
 #This only updates one record in a table , not as previous adding a row. 
 def closeBid(request, pk):
     listing=Listing.objects.get(id=pk)
-    #bidwon=Bid.objects.get(id=pk).latest(['BidOn'])
+    bidwon=Bid.objects.filter(id=pk).last()
     if  Listing.objects.filter(Title=listing, ListedBy=request.user, Status=True).exists():
         Listing.objects.filter(Title=listing, ListedBy=request.user, Status=True).update(Status=False)
-        #bidwon.BidWon = True
-        #bid.save(["BidWon"]) 
+        bidwon.BidWon = True
+        bidwon.save(update_fields=["BidWon"]) #not working properly 
     return redirect('listing',listing_id=pk)    
 
 
