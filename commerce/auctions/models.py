@@ -41,7 +41,7 @@ class Bid(models.Model):
     BidBy=models.ForeignKey(User, on_delete=models.CASCADE)
     Amount=models.FloatField()
     BidOn= models.DateTimeField(auto_now_add=True)
-
+    BidWon=models.BooleanField(default=False)            #new field to populate yes when this is the last bid
 
 
 class Comment(models.Model):

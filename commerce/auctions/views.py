@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect,HttpResponseBadRequest , Http404 
 from django.shortcuts import render , redirect
 from django.urls import reverse
+from django.core.exceptions import ValidationError 
 
 from .models import User, Listing , Bid, Comment , WatchList, ItemCategory
 from .forms import listingform, commentsform, bidform
@@ -74,16 +75,24 @@ def register(request):
 
 def listing(request,listing_id):
     try:
-         listing =  Listing.objects.get(id=listing_id)       #one listing 
+         listing =  Listing.objects.get(id=listing_id)       
          if WatchList.objects.filter(listing=listing, WatchListOf=request.user).exists():
              added=True
          else:
              added=False
+         if Listing.objects.filter(Title=listing, ListedBy=request.user, Status=True).exists():
+             close=True
+         else:
+             close=False
+         if Listing.objects.filter(Title=listing, ListedBy=request.user).exists():
+             myitem=True
+         else :
+             myitem=False   
          cform=commentsform()
          bform=bidform()
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
-    return render(request, "auctions/listing.html", {'listing':listing , 'cform':cform ,'added':added , 'bform':bform })
+    return render(request, "auctions/listing.html", {'listing':listing , 'cform':cform ,'added':added , 'bform':bform,'close':close,'myitem':myitem })
 
 
 # While the above view showed the blank template , the below view saves the input into the comments table
@@ -102,15 +111,27 @@ def postcomment(request,pk):
 # The form will take the user listing name automatrically into comments table
 # There needs to be a check to accept the bid , it must be more that the current bid. < still need to do> 
 # display a sucsess or not enough message and allow user to add another value in redrect <stil need to do> 
+
 def postbid(request,pk):
     listing=Listing.objects.get(id=pk)
     bform=bidform(request.POST)
+    maxbid=400                     #float(listing.max_bid())
+    print(maxbid)
     if bform.is_valid():
-        comment=bform.save(commit=False)
-        comment.BidBy=request.user
-        comment.listing=listing
-        comment.save()
-        return redirect('listing',listing_id=pk)
+        bid=bform.save(commit=False)
+        if bid.Amount>maxbid:
+            bid.BidBy=request.user
+            bid.listing=listing
+            bid.save()
+            taken=True
+            return redirect('listing',listing_id=pk)
+        else:
+            taken=False
+            raise ValidationError("Bid value is too small") 
+    else: 
+      taken=False
+      return redirect('listing',listing_id=pk)
+
 
 # remove item from Watchlist  if it exists 
 # Add item to watch list , and pass on the listing and user id to the Watchlist table.
@@ -124,6 +145,22 @@ def addwatchlist (request,pk):
     return redirect('listing',listing_id=pk)
 
 
+#close bid , only if the you are the lister should this be displayed <ListedBy>
+# alow to post the status in listing to Status=0 
+#This only updates one record in a table , not as previous adding a row. 
+def closeBid(request, pk):
+    listing=Listing.objects.get(id=pk)
+    #bidwon=Bid.objects.get(id=pk).latest(['BidOn'])
+    if  Listing.objects.filter(Title=listing, ListedBy=request.user, Status=True).exists():
+        Listing.objects.filter(Title=listing, ListedBy=request.user, Status=True).update(Status=False)
+        #bidwon.BidWon = True
+        #bid.save(["BidWon"]) 
+    return redirect('listing',listing_id=pk)    
+
+
+        
+
+   
 
 ############### 3 . ADDING A LISTING ######################################################################
 

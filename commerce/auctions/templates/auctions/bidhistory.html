@@ -31,6 +31,7 @@ tr:nth-child(even) {
             <th>Bid Date</th>
             <th>Bid Done By</th>
             <th>Bid Amount</th>
+            <th>Bid Won</th>
         </tr>
             {% for b in bid %}      
         <tr>
@@ -39,6 +40,7 @@ tr:nth-child(even) {
             <td>{{b.BidOn}} </td>
             <td>{{b.BidBy}}</td>
             <td>{{b.Amount}}</td>
+            <td>{{b.BidWon}}</td>
         </tr>
             {% endfor %}
         </table>

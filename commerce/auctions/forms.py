@@ -14,7 +14,8 @@ class commentsform(forms.ModelForm):
 class bidform(forms.ModelForm):
     class Meta:
         model=Bid
-        exclude=('BidOn','BidBy','listing')
+        exclude=('BidOn','BidBy','listing','BidWon')
 
+    
 
 
