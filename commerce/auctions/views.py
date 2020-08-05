@@ -187,7 +187,8 @@ def addlisting(request):
 def index(request):
     #if Listing.Status=True 
     return render(request, "auctions/index.html",{
-        "listings": Listing.objects.filter(Status=True)   #Listing.objects.exclude(Listing.Status=False).all()
+        "listings": Listing.objects.filter(Status=True)
+               #       ,"currentbid": max(l.max_bid ,l.StartBidAmount)
     })
 
 

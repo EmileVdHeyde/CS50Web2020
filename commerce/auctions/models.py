@@ -32,6 +32,7 @@ class Listing (models.Model):
 
     def max_bid(self):
         data = Listing.objects.filter(id=self.id).annotate(max=models.Max('bid__Amount'))
+        print(data[0])
         return data[0].max
 
 
