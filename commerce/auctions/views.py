@@ -75,24 +75,17 @@ def register(request):
 
 def listing(request,listing_id):
     try:
-         listing =  Listing.objects.get(id=listing_id)       
-         if WatchList.objects.filter(listing=listing, WatchListOf=request.user).exists():
-             added=True
-         else:
-             added=False
-         if Listing.objects.filter(Title=listing, ListedBy=request.user, Status=True).exists():
-             close=True
-         else:
-             close=False
-         if Listing.objects.filter(Title=listing, ListedBy=request.user).exists():
-             myitem=True
-         else :
-             myitem=False   
-         cform=commentsform()
-         bform=bidform()
+
+        listing =  Listing.objects.get(id=listing_id)       
+        if WatchList.objects.filter(listing=listing, WatchListOf=request.user).exists():
+            added=True
+        else:
+            added=False
+        cform=commentsform()
+        bform=bidform()
     except Listing.DoesNotExist:
         raise Http404("Listing not found.")
-    return render(request, "auctions/listing.html", {'listing':listing , 'cform':cform ,'added':added , 'bform':bform,'close':close,'myitem':myitem })
+    return render(request, "auctions/listing.html", {'listing':listing , 'cform':cform ,'added':added , 'bform':bform })
 
 
 # While the above view showed the blank template , the below view saves the input into the comments table
@@ -114,24 +107,22 @@ def postcomment(request,pk):
 
 def postbid(request,pk):
     listing=Listing.objects.get(id=pk)
-    bform=bidform(request.POST)
-    maxbid=listing.max_bid()    #apply this function created in models. apply it to the data object 
-    if maxbid is None:
-        maxbid=listing.StartBidAmount    # when no bid is placed yet , it myst take the start bid amount 
+    bform=bidform(request.POST,listing=listing )
     if bform.is_valid():
-        bid=bform.save(commit=False)
-        if bid.Amount>maxbid:
-            bid.BidBy=request.user
-            bid.listing=listing
-            bid.save()
-            taken=True
-            return redirect('listing',listing_id=pk)
-        else:
-            taken=False
-            raise ValidationError("Bid value is too small") 
+        bid=bform.save(commit=False)     
+        bid.BidBy=request.user
+        bid.listing=listing
+        bid.save()
+        return redirect('listing',listing_id=pk)
     else: 
-      taken=False
-      return redirect('listing',listing_id=pk)
+        if WatchList.objects.filter(listing=listing, WatchListOf=request.user).exists():
+           added=True
+        else:
+            added=False
+        cform=commentsform()
+      #taken=False
+    return render(request, "auctions/listing.html", {'listing':listing , 'cform':cform ,'added':added , 'bform':bform })
+
 
 
 # remove item from Watchlist  if it exists 

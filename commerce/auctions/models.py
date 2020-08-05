@@ -21,7 +21,7 @@ class Listing (models.Model):
     Artist=models.CharField(max_length=64)
     Description = models.TextField(blank=True)
     StartBidAmount=models.FloatField()
-    Image=models.ImageField(upload_to='listing')
+    Image=models.ImageField(upload_to='listing', blank=True ,null=True) #null back end blank front end
     ItemCategory=models.ForeignKey(ItemCategory, on_delete=models.CASCADE)
     ListedOn= models.DateTimeField(auto_now_add=True)
     Status=models.BooleanField(default=True)

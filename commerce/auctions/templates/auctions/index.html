@@ -61,7 +61,11 @@ body {
     <img src="/media/{{l.Image}}" width="250" height="300" class="card-img-top" alt="Card image" />
       <h3>{{l.Title}}</h3>
       <p>{{l.Artist}}</p>
-      <p>Current Bid: $ {{l.max_bid}}  </p>                    <!--  l.StartBidAmount -->
+      {% if l.max_bid %}
+      <p>Current Bid: $ {{l.max_bid|floatformat:0}}  </p>    
+      {% else %}
+       ${{l.StartBidAmount|floatformat:0}}
+       {% endif %}
       <a href="{% url 'listing' l.id %}" class="btn btn-info">View</a>
     </div>
   </div>

@@ -55,14 +55,15 @@
 
 
 <hr>
-{% if myitem %}
-     {% if close %}
+{% if listing.ListedBy == user %}
+     {% if listing.Status == True %}
           <a href="{% url 'close_bid' listing.id %} "> Close This Bid!!!</a>
           {% else %}
           <strong> This is Bid Closed </strong>
           {% endif %}
 
 {% else %}
+    {% if listing.Status == True %}
     <h4>Bid On Item</h4>
            <form method="post" action="{% url 'post_bid' listing.id  %}">
                  {% csrf_token %}
@@ -71,6 +72,9 @@
                </table>
                <input type="submit">
           </form>
+     {% else %}
+       <strong> This is Bid Closed </strong>
+     {% endif %}
 {% endif %}
 
 
