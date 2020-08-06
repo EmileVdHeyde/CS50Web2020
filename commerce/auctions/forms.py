@@ -22,9 +22,14 @@ class bidform(forms.ModelForm):
 
     def clean(self):
         amount=self.cleaned_data.get('Amount')
-        if amount < self.listing.max_bid() or amount < self.listing.StartBidAmount:
-            raise ValidationError("Bid value is too small") 
+        if self.listing.max_bid() is None: 
+            x=0
+        else:
+            x=self.listing.max_bid()
+        if  amount < x or amount < self.listing.StartBidAmount:
+            raise ValidationError("Bid value is too small")
         return self.cleaned_data
+        
 
 
 
