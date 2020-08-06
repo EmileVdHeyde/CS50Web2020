@@ -64,7 +64,7 @@ body {
       {% if l.max_bid %}
       <p>Current Bid: $ {{l.max_bid|floatformat:0}}  </p>    
       {% else %}
-       ${{l.StartBidAmount|floatformat:0}}
+      Start Bid: $ {{l.StartBidAmount|floatformat:0}}
        {% endif %}
       <a href="{% url 'listing' l.id %}" class="btn btn-info">View</a>
     </div>

@@ -40,17 +40,24 @@
 <ul>
     <li> <strong>Artist:</strong> {{listing.Artist}}</li>
     <li> <strong>Description:</strong> {{listing.Description}} </li>
-    <li> <strong>Listed on:</strong>  {{listing.ListedOn}}  <strong>by</strong> {{listing.ListedBy}} </li>
+    <li> <strong>Listed on:</strong>  {{listing.ListedOn|date:'Y-m-d'}}  <strong>by</strong> {{listing.ListedBy}} </li>
 </ul>
 <hr>
 
     <h4>Bid Details</h4>
 
 <ul>
-     <li> <strong>Listing Status:</strong> {{listing.Status}} </li>    
-     <li> <strong>Starting Bid :</strong> {{listing.StartBidAmount}} </li>
-     <li> <strong>Current Bid :</strong> {{listing.max_bid}} </li>
-     <li> <strong>Current Bid From:</strong>{{ listing.bid_set.last.BidBy }}</li>
+     <li> <strong>Listing Open :</strong> {{listing.Status|yesno}} </li>    
+     {% if listing.max_bid %}
+     <li><strong>Current Bid:</strong> $ {{listing.max_bid|floatformat:0}}</li>  
+     <li><strong>Current Bid From: </strong>{{ listing.bid_set.last.BidBy }}</li>  
+     
+     {% else %}
+     <li><strong>Start Bid:</strong> $ {{listing.StartBidAmount|floatformat:0}}</li>
+     <li><strong>Currently No Bids Placed</strong> </li>
+     {% endif %}
+   
+    
 </ul>
 
 
@@ -72,6 +79,8 @@
                </table>
                <input type="submit">
           </form>
+     {% elif listing.bid_set.last.BidBy == user%}
+       <strong> This is Bid Closed, Congratulations You won!!!</strong>
      {% else %}
        <strong> This is Bid Closed </strong>
      {% endif %}

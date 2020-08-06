@@ -142,17 +142,11 @@ def addwatchlist (request,pk):
 #This only updates one record in a table , not as previous adding a row. 
 def closeBid(request, pk):
     listing=Listing.objects.get(id=pk)
-    bidwon=Bid.objects.filter(id=pk).last()
     if  Listing.objects.filter(Title=listing, ListedBy=request.user, Status=True).exists():
         Listing.objects.filter(Title=listing, ListedBy=request.user, Status=True).update(Status=False)
-        bidwon.BidWon = True
-        bidwon.save(update_fields=["BidWon"]) #not working properly 
+    #    Bid.objects.filter(listing=listing).update(BidWon=True).last()
     return redirect('listing',listing_id=pk)    
 
-
-        
-
-   
 
 ############### 3 . ADDING A LISTING ######################################################################
 
